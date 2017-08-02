@@ -193,3 +193,7 @@ Expr_lexem_info Expr_scaner::current_lexem(){
     }
     return eli;
 }
+
+size_t Expr_scaner::lexem_begin_line_number(){
+    return aux_scaner->lexem_begin_line_number();
+}
