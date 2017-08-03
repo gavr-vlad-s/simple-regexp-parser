@@ -1,4 +1,4 @@
-project(test_scaner_main)
+project(test-simple-parser)
 compiler(g++)
 linker(g++)
 source_dir("src")
