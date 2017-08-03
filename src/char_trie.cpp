@@ -16,7 +16,8 @@
 #include <string>
 #include <set>
 
-char32_t* Char_trie::get_cstring(size_t idx){
+char32_t* Char_trie::get_cstring(size_t idx)
+{
     size_t id_len = node_buffer[idx].path_len;
     char32_t* p = new char32_t[id_len + 1];
     p[id_len] = 0;
@@ -35,19 +36,22 @@ char32_t* Char_trie::get_cstring(size_t idx){
     return p;
 }
 
-std::u32string Char_trie::get_string(size_t idx){
+std::u32string Char_trie::get_string(size_t idx)
+{
     char32_t* p = get_cstring(idx);
     std::u32string s = std::u32string(p);
     delete [] p;
     return s;
 }
 
-void Char_trie::print(size_t idx){
+void Char_trie::print(size_t idx)
+{
     std::u32string s32 = get_string(idx);
     std::string    s8  = u32string_to_utf8(s32);
     printf("%s",s8.c_str());
 }
 
-size_t Char_trie::get_length(size_t idx){
+size_t Char_trie::get_length(size_t idx)
+{
     return node_buffer[idx].path_len;
 }

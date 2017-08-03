@@ -9,7 +9,8 @@
 
 #include "../include/char_conv.h"
 
-std::string char32_to_utf8(const char32_t c){
+std::string char32_to_utf8(const char32_t c)
+{
     std::string s;
     char c1, c2, c3, c4;
     char32_t temp = c;
@@ -50,7 +51,8 @@ std::string char32_to_utf8(const char32_t c){
     return s;
 }
 
-std::string u32string_to_utf8(const std::u32string& u32str){
+std::string u32string_to_utf8(const std::u32string& u32str)
+{
     std::string s;
     for(const char32_t c : u32str){
         s += char32_to_utf8(c);
@@ -58,7 +60,8 @@ std::string u32string_to_utf8(const std::u32string& u32str){
     return s;
 }
 
-std::u32string utf8_to_u32string(const char* utf8str){
+std::u32string utf8_to_u32string(const char* utf8str)
+{
     std::u32string s;
     enum class State{
         Start_state,                 Three_byte_char_second_byte,

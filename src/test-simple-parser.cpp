@@ -16,7 +16,7 @@
 // #include "../include/location.h"
 // #include "../include/trie.h"
 // #include "../include/aux_expr_scaner.h"
-// #include "../include/char_conv.h"
+#include "../include/char_conv.h"
 // #include "../include/test_aux_expr_scaner.h"
 // #include "../include/errors_and_tries.h"
 #include "../include/file_contents.h"
@@ -27,7 +27,8 @@
 /* This function opens a file with test text, and it returns string containing text,
  * if file is successfully opened and the file size is not equal to zero, and the
  * empty string otherwise. */
-std::u32string init_testing(const char* name){
+std::u32string init_testing(const char* name)
+{
     auto contents = get_contents(name);
     auto str      = contents.second;
     switch(contents.first){
@@ -51,7 +52,8 @@ std::u32string init_testing(const char* name){
     return U"";
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 //     if(1 == argc){
 //         puts("Test file is not given.");
 //     }else{

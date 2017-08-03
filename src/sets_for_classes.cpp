@@ -24,7 +24,8 @@ static const std::u32string lower_letters =
 
 /* This function builds a set consisting of str string characters. The representation
  * of the set is std :: set <char32_t>. */
-static std::set<char32_t> u32string2set(const std::u32string& s){
+static std::set<char32_t> u32string2set(const std::u32string& s)
+{
     std::set<char32_t> result;
     for(const char32_t c : s){
         result.insert(c);

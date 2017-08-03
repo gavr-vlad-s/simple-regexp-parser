@@ -10,14 +10,17 @@
 #include "../include/error_count.h"
 #include <cstdio>
 
-void Error_count::increment_number_of_errors(){
+void Error_count::increment_number_of_errors()
+{
     number_of_errors++;
 }
 
-int Error_count::get_number_of_errors() const{
+int Error_count::get_number_of_errors() const
+{
     return number_of_errors;
 }
 
-void Error_count::print(){
+void Error_count::print() const
+{
     printf("\nTotal errors %d\n", number_of_errors);
 }

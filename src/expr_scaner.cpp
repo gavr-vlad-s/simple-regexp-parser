@@ -65,7 +65,8 @@ inline std::set<char32_t> char_class_set_by_lexeme(Aux_expr_lexem_code e)
     return sets_for_char_classes[char_class_to_array_index(e)];
 }
 
-Expr_lexem_info Expr_scaner::convert_lexeme(const Aux_expr_lexem_info aeli){
+Expr_lexem_info Expr_scaner::convert_lexeme(const Aux_expr_lexem_info aeli)
+{
     Expr_lexem_info     eli;
     Aux_expr_lexem_code aelic = aeli.code;
 
@@ -114,11 +115,13 @@ Expr_scaner::State_proc Expr_scaner::procs[] = {
     &Expr_scaner::end_class_complement_proc
 };
 
-void Expr_scaner::begin_class_complement_proc(){
+void Expr_scaner::begin_class_complement_proc()
+{
     state = State::First_char;
 }
 
-void Expr_scaner::first_char_proc(){
+void Expr_scaner::first_char_proc()
+{
     state = State::Body_chars;
     if(Aux_expr_lexem_code::Character == aelic){
         curr_set.insert(aeli.c);
@@ -134,7 +137,8 @@ void Expr_scaner::first_char_proc(){
     }
 }
 
-void Expr_scaner::body_chars_proc(){
+void Expr_scaner::body_chars_proc()
+{
     state = State::Body_chars;
     if(Aux_expr_lexem_code::Character == aelic){
         curr_set.insert(aeli.c);
@@ -155,7 +159,8 @@ void Expr_scaner::body_chars_proc(){
 
 void Expr_scaner::end_class_complement_proc(){}
 
-size_t Expr_scaner::get_set_complement(){
+size_t Expr_scaner::get_set_complement()
+{
     set_idx = 0;
     state   = State::Begin_class_complement;
 
@@ -172,7 +177,8 @@ size_t Expr_scaner::get_set_complement(){
     return set_idx;
 }
 
-Expr_lexem_info Expr_scaner::current_lexem(){
+Expr_lexem_info Expr_scaner::current_lexem()
+{
     Expr_lexem_info     eli;
 
     aelic = (aeli = aux_scaner-> current_lexem()).code;
@@ -194,6 +200,12 @@ Expr_lexem_info Expr_scaner::current_lexem(){
     return eli;
 }
 
-size_t Expr_scaner::lexem_begin_line_number(){
+size_t Expr_scaner::lexem_begin_line_number()
+{
     return aux_scaner->lexem_begin_line_number();
+}
+
+void Expr_scaner::back()
+{
+    aux_scaner->back();
 }

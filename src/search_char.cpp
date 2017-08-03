@@ -8,7 +8,8 @@
 */
 
 #include "../include/search_char.h"
-int search_char(char32_t c, const char32_t* array){
+int search_char(char32_t c, const char32_t* array)
+{
     char32_t ch;
     int      curr_pos = 0;
     for(char32_t* p = const_cast<char32_t*>(array); (ch = *p++); ){

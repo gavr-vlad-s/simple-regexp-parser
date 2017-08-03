@@ -75,13 +75,13 @@ static const char* expected_char_or_char_calss_or_compl =
 
 static const char* expected_char_or_char_calss_or_compl_or_cl_br =
     "At line %zu, a character, a character class, or a closing "
-    "brace is expected.\n"
+    "brace is expected.\n";
 
 static const char* char_class_is_not_admissible =
     "Error at line %zu: the character class complement "
     "are not allowed in the identifier definition.\n";
 
-inline belongs(Expr_lexem_code e, uint64_t s)
+inline uint64_t belongs(Expr_lexem_code e, uint64_t s)
 {
     return belongs(static_cast<uint64_t>(e), s);
 }

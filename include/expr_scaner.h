@@ -37,6 +37,7 @@ public:
 
     Expr_lexem_info current_lexem();
     size_t          lexem_begin_line_number();
+    void            back();
 private:
     Trie_for_set_of_char32ptr compl_set_trie;
     Aux_expr_scaner_ptr       aux_scaner;

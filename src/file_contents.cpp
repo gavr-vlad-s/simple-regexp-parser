@@ -23,7 +23,8 @@ private:
     FILE* fptr = 0;
 };
 
-Contents get_contents(const char* name){
+Contents get_contents(const char* name)
+{
     Contents result = std::make_pair(Get_contents_return_code::Normal, "");
     Binary_file f {name};
     FILE* fptr = f.get();

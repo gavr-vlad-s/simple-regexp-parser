@@ -56,7 +56,8 @@ static std::string show_categories_set(uint64_t cs)
     return result;
 }
 
-static void print_categories_set(uint64_t cs){
+static void print_categories_set(uint64_t cs)
+{
     std::string s = show_categories_set(cs);
     printf("%s\n", s.c_str());
 }
@@ -283,7 +284,8 @@ Aux_expr_scaner::Final_proc Aux_expr_scaner::finals[] = {
     &Aux_expr_scaner::hat_final_proc
 };
 
-bool Aux_expr_scaner::start_proc() {
+bool Aux_expr_scaner::start_proc()
+{
     bool t = true;
     state = -1;
     /* For an automaton that processes a lexeme, the state with the number (-1)
@@ -329,7 +331,8 @@ static const char* class_strings[] = {
 
 static const char* line_expects = "Line %zu expects %s.\n";
 
-void Aux_expr_scaner::correct_class(){
+void Aux_expr_scaner::correct_class()
+{
     /* This function corrects the code of the token, most likely a character class,
      * and displays the necessary diagnostics. */
     if(token.code >= Aux_expr_lexem_code::M_Class_Latin){
@@ -342,7 +345,8 @@ void Aux_expr_scaner::correct_class(){
     }
 }
 
-Aux_expr_lexem_info Aux_expr_scaner::current_lexem(){
+Aux_expr_lexem_info Aux_expr_scaner::current_lexem()
+{
     automaton   = A_start;
     token.code  = Aux_expr_lexem_code::Nothing;
     lexem_begin = loc->pcurrent_char;
@@ -385,7 +389,8 @@ Aux_expr_lexem_info Aux_expr_scaner::current_lexem(){
     return token;
 }
 
-bool Aux_expr_scaner::unknown_proc(){
+bool Aux_expr_scaner::unknown_proc()
+{
     return belongs(Other, char_categories);
 }
 
@@ -408,7 +413,8 @@ static const char* expects_LRbdlnorx =
 static const char* latin_letter_expected =
     "A Latin letter or an underscore is expected on the %zu line.\n";
 
-bool Aux_expr_scaner::classes_proc(){
+bool Aux_expr_scaner::classes_proc()
+{
     bool t = false;
     switch(state){
         case -1:
@@ -442,7 +448,8 @@ bool Aux_expr_scaner::classes_proc(){
     return t;
 }
 
-bool Aux_expr_scaner::char_proc(){
+bool Aux_expr_scaner::char_proc()
+{
     if(belongs(After_backslash, char_categories)){
         token.c = (U'n' == ch) ? U'\n' : ch;
         (loc->pcurrent_char)++;
@@ -452,7 +459,8 @@ bool Aux_expr_scaner::char_proc(){
     return false;
 }
 
-bool Aux_expr_scaner::delimiter_proc(){
+bool Aux_expr_scaner::delimiter_proc()
+{
     bool t = false;
     switch(ch){
         case U'{':
@@ -484,7 +492,8 @@ bool Aux_expr_scaner::delimiter_proc(){
     return t;
 }
 
-bool Aux_expr_scaner::action_proc(){
+bool Aux_expr_scaner::action_proc()
+{
     bool t = true;
     /* The variable t is true if the action name has not yet
      * been fully read, and false otherwise. */
@@ -505,7 +514,8 @@ bool Aux_expr_scaner::action_proc(){
     return t;
 }
 
-bool Aux_expr_scaner::hat_proc(){
+bool Aux_expr_scaner::hat_proc()
+{
     bool t = false;
     if(ch == U']'){
         token.code = Aux_expr_lexem_code::End_char_class_complement;
@@ -514,27 +524,32 @@ bool Aux_expr_scaner::hat_proc(){
     return t;
 }
 
-void Aux_expr_scaner::none_final_proc(){
+void Aux_expr_scaner::none_final_proc()
+{
     /* This subroutine will be called if, after reading the input text, it turned out
      * to be in the A_start automaton. Then you do not need to do anything. */
 }
 
-void Aux_expr_scaner::unknown_final_proc(){
+void Aux_expr_scaner::unknown_final_proc()
+{
     /* This subroutine will be called if, after reading the input text, it turned out
      * to be in the A_unknown automaton. Then you do not need to do anything. */
 }
 
-void Aux_expr_scaner::action_final_proc(){
+void Aux_expr_scaner::action_final_proc()
+{
     /* This function will be called if, after reading the input stream, they were
      * in the action names processing automaton, the A_action automaton. Then this
      * name should be written in the prefix tree of identifiers. */
     token.action_name_index = ids -> insert(buffer);
 }
 
-void Aux_expr_scaner::delimiter_final_proc(){
+void Aux_expr_scaner::delimiter_final_proc()
+{
 }
 
-void Aux_expr_scaner::classes_final_proc(){
+void Aux_expr_scaner::classes_final_proc()
+{
     switch(state){
         case -1:
             token.code = Aux_expr_lexem_code::Character;  token.c = U'[';
@@ -548,11 +563,13 @@ void Aux_expr_scaner::classes_final_proc(){
     }
 }
 
-void Aux_expr_scaner::char_final_proc(){
+void Aux_expr_scaner::char_final_proc()
+{
     token.c = U'\\';
 }
 
-void Aux_expr_scaner::hat_final_proc(){
+void Aux_expr_scaner::hat_final_proc()
+{
     token.code = Aux_expr_lexem_code::Character;
     token.c    = U'^';
 }

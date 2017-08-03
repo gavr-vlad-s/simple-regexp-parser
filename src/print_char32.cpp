@@ -27,7 +27,8 @@ static const std::map<char32_t, std::string> esc_char_strings = {
     {U'\x1d', R"~('\X1d')~"}, {U'\x1e', R"~('\X1e')~"}, {U'\x1f', R"~('\X1f')~"}
 };
 
-std::string show_char32(const char32_t c){
+std::string show_char32(const char32_t c)
+{
     std::string result;
     auto it = esc_char_strings.find(c);
     if(it != esc_char_strings.end()){
@@ -38,7 +39,8 @@ std::string show_char32(const char32_t c){
     return result;
 }
 
-void print_char32(const char32_t c){
+void print_char32(const char32_t c)
+{
     std::string s = show_char32(c);
     printf("%s", s.c_str());
 }
