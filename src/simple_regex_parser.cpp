@@ -58,7 +58,8 @@ static const char* unexpected_end_of_regexp =
     "Unexpected end of a regular expression at line %zu.\n";
 
 static const char* expected_char_or_char_calss_or_compl =
-    "Error at line %zu: a character or character class is expected.\n";
+    "Error at line %zu: a character, a character class, or a character class complement "
+    "is expected.\n";
 
 static const char* expected_char_or_char_calss_or_compl_or_cl_br =
     "Error at line %zu: a character, a character class, or a closing "
@@ -87,7 +88,8 @@ void Simple_regex_parser::state_begin_expr_proc(Command_buffer& buf){
     }
 }
 
-void Simple_regex_parser::state_begin_concat_proc(Command_buffer& buf){
+void Simple_regex_parser::state_begin_concat_proc(Command_buffer& buf)
+{
     state = State::Concat;
     if(belongs(elc, char_char_class_and_compl)){
         write_char_or_char_class(buf);
@@ -101,7 +103,8 @@ void Simple_regex_parser::state_begin_concat_proc(Command_buffer& buf){
                                                        State::Begin_concat;
 }
 
-void Simple_regex_parser::state_concat_proc(Command_buffer& buf){
+void Simple_regex_parser::state_concat_proc(Command_buffer& buf)
+{
     if(belongs(elc, char_char_class_and_compl)){
         write_char_or_char_class(buf);
         number_of_concatenated++;
@@ -121,11 +124,13 @@ void Simple_regex_parser::state_concat_proc(Command_buffer& buf){
     }
 }
 
-void Simple_regex_parser::state_end_expr_proc(Command_buffer& buf){
+void Simple_regex_parser::state_end_expr_proc(Command_buffer& buf)
+{
     esc_->back();
 }
 
-void Simple_regex_parser::write_char_or_char_class(Command_buffer& buf){
+void Simple_regex_parser::write_char_or_char_class(Command_buffer& buf)
+{
     Command  command;
     command.action_name = 0;
     switch(elc){
@@ -150,36 +155,40 @@ void Simple_regex_parser::write_char_or_char_class(Command_buffer& buf){
     return;
 }
 
-void Simple_regex_parser::write_or_command(Command_buffer& buf){
+void Simple_regex_parser::write_or_command(Command_buffer& buf)
+{
     Command  command;
     number_of_ors++;
     if(1 == number_of_ors){
         arg1 = buf.size() - 1;
     }else{
         arg2 = buf.size() - 1;
-        command.args.first = arg1; command.args.second = arg2;
-        command.name = Cmd_or;
+        command.args.first  = arg1;
+        command.args.second = arg2;
+        command.name        = Command_name::Or;
         command.action_name = 0;
         buf.push_back(command);
         arg1 = buf.size() - 1;
     }
 }
 
-void Simple_regex_parser::write_concatenated(Command_buffer& buf){
+void Simple_regex_parser::write_concatenated(Command_buffer& buf)
+{
     if(number_of_concatenated > 1){
         Command command;
         command.args.first  = first_concatenated;
         command.args.second = buf.size() - 1;
-        command.name        = Cmd_multiconcat;
+        command.name        = Command_name::Multiconcat;
         command.action_name = 0;
         buf.push_back(command);
     }
 }
 
-void Simple_regex_parser::compile(Command_buffer& buf){
-    state              = State::Begin_expr;
-    number_of_ors      = 0;
-    first_concatenated = 0;
+void Simple_regex_parser::compile(Command_buffer& buf)
+{
+    state                  = State::Begin_expr;
+    number_of_ors          = 0;
+    first_concatenated     = 0;
     number_of_concatenated = 0;
     arg1 = arg2 = 0;
     while((elc = (eli = esc_->current_lexem()).code) !=
