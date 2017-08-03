@@ -24,38 +24,25 @@
  * automaton (DFA), after which, minimizing the constructed DFA, we obtain the
  * following transition table:
  *
- * -------------------------------------------------------------------------------------
- * |   | State_begin_expr   | State_begin_concat | State_concat       | State_end_expr |
- * -------------------------------------------------------------------------------------
- * | a |                    | State_concat       | State_concat       |                |
- * -------------------------------------------------------------------------------------
- * | b |                    |                    | State_begin_concat |                |
- * -------------------------------------------------------------------------------------
- * | c | State_begin_concat |                    |                    |                |
- * -------------------------------------------------------------------------------------
- * | d |                    |                    | State_end_expr     |                |
- * -------------------------------------------------------------------------------------
- * In this table, column names are state names, and State_begin_expr is the initial
- * state, and State_end_expr is the end state. */
+ * -------------------------------------------------------------------
+ * |     state    | a      |      b       |      c       |     d     |
+ * -------------------------------------------------------------------
+ * | Begin_expr   |        |              | Begin_concat |           |
+ * -------------------------------------------------------------------
+ * | Begin_concat | Concat |              |              |           |
+ * -------------------------------------------------------------------
+ * | Concat       | Concat | Begin_concat |              | End_expr  |
+ * -------------------------------------------------------------------
+ * | End_expr     |        |              |              |           |
+ * -------------------------------------------------------------------
+ *
+ * In this table names are state names, and Begin_expr is the initial
+ * state, and End_expr is the end state. */
 
 static const uint64_t char_char_class_and_compl =
     (1ULL << static_cast<uint64_t>(Expr_lexem_code::Character)) |
     (1ULL << static_cast<uint64_t>(Expr_lexem_code::Class_complement)) |
     (1ULL << static_cast<uint64_t>(Expr_lexem_code::Character_class));
-
-// static const unsigned long long set_of_first_lexems_of_expr =
-//     1ULL << Character     | 1ULL << Class_Latin   |
-//     1ULL << Class_Letter  | 1ULL << Class_Russian |
-//     1ULL << Class_bdigits | 1ULL << Class_digits  |
-//     1ULL << Class_latin   | 1ULL << Class_letter  |
-//     1ULL << Class_odigits | 1ULL << Class_russian |
-//     1ULL << Class_xdigits;
-//
-// static const unsigned long long set_of_non_quotes =
-//     1ULL << Class_ndq | 1ULL << Class_nsq;
-//
-// static const unsigned long long character_and_char_classes =
-//     set_of_first_lexems_of_expr | set_of_non_quotes;
 
 Simple_regex_parser::Proc Simple_regex_parser::state_proc[] = {
     &Simple_regex_parser::state_begin_expr_proc,
@@ -87,7 +74,7 @@ inline uint64_t belongs(Expr_lexem_code e, uint64_t s)
 }
 
 void Simple_regex_parser::state_begin_expr_proc(Command_buffer& buf){
-    state = State_begin_concat;
+    state = State::Begin_concat;
     if(Expr_lexem_code::Begin_expression == elc){
         return;
     }
@@ -96,12 +83,12 @@ void Simple_regex_parser::state_begin_expr_proc(Command_buffer& buf){
     if(belongs(elc, char_char_class_and_compl)){
         esc_->back();
     }else if(Expr_lexem_code::End_expression == elc){
-        state = State_end_expr;
+        state = State::End_expr;
     }
 }
 
 void Simple_regex_parser::state_begin_concat_proc(Command_buffer& buf){
-    state = State_concat;
+    state = State::Concat;
     if(belongs(elc, char_char_class_and_compl)){
         write_char_or_char_class(buf);
         first_concatenated     = buf.size() - 1;
@@ -110,8 +97,8 @@ void Simple_regex_parser::state_begin_concat_proc(Command_buffer& buf){
     }
     printf(expected_char_or_char_calss_or_compl, esc_->lexem_begin_line_number());
     et_.ec -> increment_number_of_errors();
-    state = (Expr_lexem_code::End_expression == elc) ? State_end_expr:
-                                                       State_begin_concat;
+    state = (Expr_lexem_code::End_expression == elc) ? State::End_expr:
+                                                       State::Begin_concat;
 }
 
 void Simple_regex_parser::state_concat_proc(Command_buffer& buf){
@@ -122,11 +109,11 @@ void Simple_regex_parser::state_concat_proc(Command_buffer& buf){
         write_concatenated(buf);
         write_or_command(buf);
         number_of_concatenated = 0;
-        state = State_begin_concat;
+        state = State::Begin_concat;
     }else if(Expr_lexem_code::End_expression == elc){
         write_concatenated(buf);
         write_or_command(buf);
-        state = State_end_expr;
+        state = State::End_expr;
     }else{
         printf(expected_char_or_char_calss_or_compl_or_cl_br,
                esc_->lexem_begin_line_number());
@@ -184,21 +171,23 @@ void Simple_regex_parser::write_concatenated(Command_buffer& buf){
 }
 
 void Simple_regex_parser::compile(Command_buffer& buf){
-    state              = State_begin_expr;
+    state              = State::Begin_expr;
     number_of_ors      = 0;
     first_concatenated = 0;
     number_of_concatenated = 0;
     arg1 = arg2 = 0;
-    while((elc = (eli = esc_->current_lexem()).code)){
+    while((elc = (eli = esc_->current_lexem()).code) !=
+        Expr_lexem_code::Nothing)
+    {
         (this->*state_proc[state])(buf);
-        if(State_end_expr == state){
+        if(State::End_expr == state){
             return;
         }
     }
-    if(state != State_end_expr){
+    if(state != State::End_expr){
         printf(unexpected_end_of_regexp, esc_->lexem_begin_line_number());
         et_.ec->increment_number_of_errors();
-        if((State_concat == state) || (State_begin_concat == state)){
+        if((State::Concat == state) || (State::Begin_concat == state)){
             write_concatenated(buf);
             write_or_command(buf);
         }

@@ -31,11 +31,11 @@ private:
     size_t number_of_concatenated;
     size_t arg1, arg2;
 
-    enum Parser_state{
-        State_begin_expr, State_begin_concat,
-        State_concat,     State_end_expr
+    enum State{
+        Begin_expr, Begin_concat,
+        Concat,     End_expr
     };
-    Parser_state state;
+    State state;
 
     typedef void (Simple_regex_parser::*Proc)(Command_buffer& buf);
 
