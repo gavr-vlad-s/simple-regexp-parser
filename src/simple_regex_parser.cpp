@@ -52,16 +52,16 @@ Simple_regex_parser::Proc Simple_regex_parser::state_proc[] = {
 };
 
 static const char* opening_curly_brace_is_omitted =
-    "Line %zu omits the opening curly brace.\n";
+    "Error at line %zu: the opening curly brace is omited.\n";
 
 static const char* unexpected_end_of_regexp =
-    "Unexpected end of a regular expression in line %zu.\n";
+    "Unexpected end of a regular expression at line %zu.\n";
 
 static const char* expected_char_or_char_calss_or_compl =
-    "At line %zu, a character or character class is expected.\n";
+    "Error at line %zu: a character or character class is expected.\n";
 
 static const char* expected_char_or_char_calss_or_compl_or_cl_br =
-    "At line %zu, a character, a character class, or a closing "
+    "Error at line %zu: a character, a character class, or a closing "
     "brace is expected.\n";
 
 static const char* char_class_is_not_admissible =
@@ -127,18 +127,24 @@ void Simple_regex_parser::state_end_expr_proc(Command_buffer& buf){
 
 void Simple_regex_parser::write_char_or_char_class(Command_buffer& buf){
     Command  command;
-    if(Expr_lexem_code::Character == elc){
-        command.name = Cmd_char_def;
-        command.c    = eli.c;
-        command.action_name = 0;
-    }else{
-        command.name = Cmd_char_class_def;
-        command.cls  = static_cast<Char_class>(elc - Class_Latin);
-        command.action_name = 0;
-        if(Expr_lexem_code::Class_complement == elc){
+    command.action_name = 0;
+    switch(elc){
+        case Expr_lexem_code::Character:
+            command.name        = Command_name::Char;
+            command.c           = eli.c;
+            break;
+        case Expr_lexem_code::Character_class:
+            command.name        = Command_name::Char_class;
+            command.idx_of_set  = eli.set_of_char_index;
+            break;
+        case Expr_lexem_code::Class_complement:
+            command.name        = Command_name::Char_class_complement;
+            command.idx_of_set  = eli.set_of_char_index;
             printf(char_class_is_not_admissible, esc_->lexem_begin_line_number());
             et_.ec -> increment_number_of_errors();
-        }
+            break;
+        default:
+            ;
     }
     buf.push_back(command);
     return;
