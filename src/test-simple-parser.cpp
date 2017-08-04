@@ -24,6 +24,8 @@
 #include "../include/expr_scaner.h"
 #include "../include/simple_regex_parser.h"
 #include "../include/command.h"
+#include "../include/print_commands.h"
+
 // #include "../include/test_expr_scaner.h"
 
 /* This function opens a file with test text, and it returns string containing text,
@@ -32,7 +34,7 @@
 std::u32string init_testing(const char* name)
 {
     auto contents = get_contents(name);
-    auto str      = contents.second;
+    auto& str      = contents.second;
     switch(contents.first){
         case Get_contents_return_code::Normal:
             if(!str.length()){
@@ -74,7 +76,7 @@ int main(int argc, char** argv)
             auto expr_parser   = std::make_unique<Simple_regex_parser>(esc, etr);
 
             Command_buffer commands;
-            print_commands(commands);
+            print_commands(commands, trie_for_sets);
         }
     }
     return 0;
