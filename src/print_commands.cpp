@@ -69,5 +69,6 @@ void print_commands(const Command_buffer& buf, const Trie_for_set_of_char32ptr& 
 {
     for(const auto& e : buf){
         print_command(e, t);
+        putchar('\n');
     }
 }
